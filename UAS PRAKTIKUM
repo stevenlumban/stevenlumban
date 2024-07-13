@@ -1,210 +1,64 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": 3,
-   "id": "3589bbf1-3e7c-4b19-86ed-1b0c29306464",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import cv2\n",
-    "import numpy as np\n",
-    "from matplotlib import pyplot as plt"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 37,
-   "id": "4ec29d0e-f116-4bb0-a1bf-ada56cbb7b6c",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# Membaca gambar\n",
-    "image_path = '/mnt/data/Gambar WhatsApp 2024-07-13 pukul 17.11.45_b05491ca.jpg'\n",
-    "img = cv2.imread(image_path)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 45,
-   "id": "057c5659-e39d-4749-b9c9-d4da4c5c165d",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# Fungsi untuk menampilkan gambar\n",
-    "def show_image(title, img):\n",
-    "    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)\n",
-    "    plt.imshow(img_rgb)\n",
-    "    plt.title(title)\n",
-    "    plt.axis('off')\n",
-    "    plt.show()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "583847ac-911f-4483-afee-58fbc40478c6",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# 1. Menampilkan citra asli\n",
-    "show_image('Citra Asli', img)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "5da118b0-588e-43e7-bacb-22486230e2c7",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# 2. Rotasi\n",
-    "def rotate_image(img, angle):\n",
-    "    (h, w) = img.shape[:2]\n",
-    "    center = (w / 2, h / 2)\n",
-    "    M = cv2.getRotationMatrix2D(center, angle, 1.0)\n",
-    "    rotated = cv2.warpAffine(img, M, (w, h))\n",
-    "    return rotated\n"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "487ea9b4-4975-4291-be3d-19b3cb7bb7cd",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "rotated_img = rotate_image(img, 45)\n",
-    "show_image('Rotated', rotated_img)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "b6a768f9-28c9-4e05-b3ed-81d7260fcea1",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# 3. Resize\n",
-    "def resize_image(img, scale_factor):\n",
-    "    width = int(img.shape[1] * scale_factor)\n",
-    "    height = int(img.shape[0] * scale_factor)\n",
-    "    resized = cv2.resize(img, (width, height), interpolation=cv2.INTER_LINEAR)\n",
-    "    return resized"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "f01310f8-dc1e-4254-8d14-986d9df2026b",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "resized_img = resize_image(img, 0.5)\n",
-    "show_image('Resized', resized_img)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "5ad46554-1b66-4277-9a6f-3de9ac60f280",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# 4. Crop\n",
-    "def crop_image(img, start_x, start_y, width, height):\n",
-    "    cropped = img[start_y:start_y+height, start_x:start_x+width]\n",
-    "    return cropped"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "231c2f8b-3059-473e-abf2-64e6efd53421",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "cropped_img = crop_image(img, 50, 50, 200, 200)\n",
-    "show_image('Cropped', cropped_img)\n"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "38f10aed-26bc-43ed-b428-5aa6a1d3d1c1",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# 5. Flip\n",
-    "def flip_image(img, flip_code):\n",
-    "    flipped = cv2.flip(img, flip_code)\n",
-    "    return flipped"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "f5dcfc0d-93f0-4e8b-9eba-3d3ca9d06f3f",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "flipped_img = flip_image(img, 1)  # 0: flip vertically, 1: flip horizontally, -1: flip both axes\n",
-    "show_image('Flipped', flipped_img)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "2ea75d71-1a7d-4077-be69-90ecd14200bd",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# 6. Translasi\n",
-    "def translate_image(img, x, y):\n",
-    "    M = np.float32([[1, 0, x], [0, 1, y]])\n",
-    "    translated = cv2.warpAffine(img, M, (img.shape[1], img.shape[0]))\n",
-    "    return translated"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "3d7212b3-fdb2-4f29-becd-35f9dfb00931",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "translated_img = translate_image(img, 100, 50)\n",
-    "show_image('Translated', translated_img)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "48df863c-7811-41c7-b826-1eac82d1f18d",
-   "metadata": {},
-   "outputs": [],
-   "source": []
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.12.4"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
-}
+import cv2
+import numpy as np
+from matplotlib import pyplot as plt
+
+# Membaca gambar
+image_path = '/mnt/data/Gambar WhatsApp 2024-07-13 pukul 17.11.45_b05491ca.jpg'
+img = cv2.imread(image_path)
+
+# Fungsi untuk menampilkan gambar menggunakan matplotlib
+def show_image(title, img):
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    plt.imshow(img_rgb)
+    plt.title(title)
+    plt.axis('off')
+    plt.show()
+
+# 1. Menampilkan citra asli
+show_image('Citra Asli', img)
+
+# 2. Rotasi
+def rotate_image(img, angle):
+    (h, w) = img.shape[:2]
+    center = (w / 2, h / 2)
+    M = cv2.getRotationMatrix2D(center, angle, 1.0)
+    rotated = cv2.warpAffine(img, M, (w, h))
+    return rotated
+
+rotated_img = rotate_image(img, 45)
+show_image('Rotated', rotated_img)
+
+# 3. Resize
+def resize_image(img, scale_factor):
+    width = int(img.shape[1] * scale_factor)
+    height = int(img.shape[0] * scale_factor)
+    resized = cv2.resize(img, (width, height), interpolation=cv2.INTER_LINEAR)
+    return resized
+
+resized_img = resize_image(img, 0.5)
+show_image('Resized', resized_img)
+
+# 4. Crop
+def crop_image(img, start_x, start_y, width, height):
+    cropped = img[start_y:start_y+height, start_x:start_x+width]
+    return cropped
+
+cropped_img = crop_image(img, 50, 50, 200, 200)
+show_image('Cropped', cropped_img)
+
+# 5. Flip
+def flip_image(img, flip_code):
+    flipped = cv2.flip(img, flip_code)
+    return flipped
+
+flipped_img = flip_image(img, 1)  # 0: flip vertically, 1: flip horizontally, -1: flip both axes
+show_image('Flipped', flipped_img)
+
+# 6. Translasi
+def translate_image(img, x, y):
+    M = np.float32([[1, 0, x], [0, 1, y]])
+    translated = cv2.warpAffine(img, M, (img.shape[1], img.shape[0]))
+    return translated
+
+translated_img = translate_image(img, 100, 50)
+show_image('Translated', translated_img)
